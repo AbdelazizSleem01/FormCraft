@@ -1,0 +1,28 @@
+{
+  "name": "FormCraft - Dynamic Form Dashboard",
+  "short_name": "FormCraft",
+  "description": "Build, manage, and analyze dynamic forms with ease. Create beautiful forms, collect submissions, and gain insights with our powerful form builder.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#6C63FF",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["business", "productivity", "utilities"],
+  "lang": "en-US",
+  "dir": "ltr",
+  "scope": "/"
+}
