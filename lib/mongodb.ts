@@ -1,6 +1,16 @@
 import mongoose from "mongoose";
+import dns from "dns";
 
 const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/form-dashboard";
+const DNS_SERVERS = process.env.DNS_SERVERS;
+
+if (DNS_SERVERS) {
+  // Force Node to use specific DNS servers (useful when SRV lookups fail)
+  const servers = DNS_SERVERS.split(",").map((s) => s.trim()).filter(Boolean);
+  if (servers.length > 0) {
+    dns.setServers(servers);
+  }
+}
 
 if (process.env.NODE_ENV === "production") {
   if (!process.env.MONGODB_URI) {

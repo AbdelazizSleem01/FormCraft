@@ -16,7 +16,6 @@ async function getStats(user: SessionUser) {
       FormSubmissionModel.find(filter).sort({ submittedAt: -1 }).limit(5).lean(),
     ]);
 
-    // Submissions in the last 7 days
     const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
     const weeklyCount = await FormSubmissionModel.countDocuments({
       ...filter,

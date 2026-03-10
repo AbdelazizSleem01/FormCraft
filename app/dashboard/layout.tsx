@@ -7,7 +7,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const user = requireServerAuth();
 
   return (
-    <div className="min-h-screen" style={{ background: "var(--bg)" }}>
+    <div className="min-h-screen bg-base-100">
       <SidebarProvider>
         <Sidebar user={user} />
         <TopBar user={user} />

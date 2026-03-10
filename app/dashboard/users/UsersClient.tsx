@@ -160,237 +160,228 @@ export default function UsersClient() {
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
         <form
           onSubmit={handleCreate}
-          className="xl:col-span-1 rounded-xl p-4 h-fit"
-          style={{ background: "var(--surface)", border: "1px solid var(--border)" }}
+          className="card bg-base-200 border border-base-300 xl:col-span-1"
         >
-          <h3 className="text-sm font-semibold mb-4" style={{ color: "var(--text-primary)" }}>
-            Create User
-          </h3>
+          <div className="card-body p-4">
+            <h3 className="text-sm font-semibold text-base-content mb-4">
+              Create User
+            </h3>
 
-          <div className="space-y-3">
-            <input
-              className="form-input"
-              type="email"
-              placeholder="email@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-            <input
-              className="form-input"
-              type="text"
-              placeholder="Temporary password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+            <div className="space-y-3">
+              <input
+                className="input input-bordered input-sm w-full bg-base-300"
+                type="email"
+                placeholder="email@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+              <input
+                className="input input-bordered input-sm w-full bg-base-300"
+                type="text"
+                placeholder="Temporary password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
 
-            <select className="form-input" value={role} onChange={(e) => setRole(e.target.value as UserRole)}>
-              {roles.map((item) => (
-                <option key={item} value={item}>
-                  {item}
-                </option>
-              ))}
-            </select>
-
-            <div className="space-y-2">
-              <p className="text-xs" style={{ color: "var(--text-muted)" }}>
-                Permissions
-              </p>
-              <div className="max-h-48 overflow-auto space-y-1">
-                {APP_PERMISSIONS.map((perm) => (
-                  <label key={perm} className="flex items-center gap-2 text-xs" style={{ color: "var(--text-secondary)" }}>
-                    <input
-                      type="checkbox"
-                      checked={permissions.includes(perm)}
-                      onChange={() => togglePermission(perm)}
-                    />
-                    {perm}
-                  </label>
+              <select className="select select-bordered select-sm w-full bg-base-300" value={role} onChange={(e) => setRole(e.target.value as UserRole)}>
+                {roles.map((item) => (
+                  <option key={item} value={item}>
+                    {item}
+                  </option>
                 ))}
+              </select>
+
+              <div className="space-y-2">
+                <p className="text-xs text-neutral-content/60">
+                  Permissions
+                </p>
+                <div className="max-h-48 overflow-auto space-y-1">
+                  {APP_PERMISSIONS.map((perm) => (
+                    <label key={perm} className="flex items-center gap-2 text-xs text-neutral-content/80 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        className="checkbox checkbox-xs checkbox-primary"
+                        checked={permissions.includes(perm)}
+                        onChange={() => togglePermission(perm)}
+                      />
+                      {perm}
+                    </label>
+                  ))}
+                </div>
               </div>
+
+              {error && (
+                <p className="text-xs text-error">
+                  {error}
+                </p>
+              )}
+
+              <button
+                type="submit"
+                disabled={submitting}
+                className="btn text-white btn-sm w-full bg-primary "
+              >
+                {submitting ? "Creating..." : "Create User"}
+              </button>
             </div>
-
-            {error && (
-              <p className="text-xs" style={{ color: "#FF4D6A" }}>
-                {error}
-              </p>
-            )}
-
-            <button
-              type="submit"
-              disabled={submitting}
-              className="w-full py-2 rounded-lg text-sm font-semibold"
-              style={{
-                background: "linear-gradient(135deg, var(--accent), var(--accent-muted))",
-                color: "white",
-                opacity: submitting ? 0.7 : 1,
-              }}
-            >
-              {submitting ? "Creating..." : "Create User"}
-            </button>
           </div>
         </form>
 
-        <div
-          className="xl:col-span-2 rounded-xl overflow-hidden"
-          style={{ background: "var(--surface)", border: "1px solid var(--border)" }}
-        >
-          <div className="p-4" style={{ borderBottom: "1px solid var(--border)" }}>
-            <h3 className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>
-              User Accounts
-            </h3>
-          </div>
+        <div className="card bg-base-200 border border-base-300 xl:col-span-2 overflow-hidden">
+          <div className="card-body p-0">
+            <div className="p-4 border-b border-base-300">
+              <h3 className="text-sm font-semibold text-base-content">
+                User Accounts
+              </h3>
+            </div>
 
-          {loading ? (
-            <div className="p-6 text-sm" style={{ color: "var(--text-muted)" }}>
-              Loading users...
-            </div>
-          ) : sortedUsers.length === 0 ? (
-            <div className="p-6 text-sm" style={{ color: "var(--text-muted)" }}>
-              No users found.
-            </div>
-          ) : (
-            <div className="divide-y" style={{ borderColor: "var(--border)" }}>
-              {sortedUsers.map((item) => (
-                <div key={item._id} className="p-4">
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <p className="text-sm" style={{ color: "var(--text-primary)" }}>
-                        {item.email}
-                      </p>
-                      <p className="text-xs mt-0.5" style={{ color: "var(--text-muted)", textTransform: "capitalize" }}>
-                        {item.role.replace("_", " ")}
-                      </p>
+            {loading ? (
+              <div className="p-6 text-sm text-neutral-content/60 text-center">
+                Loading users...
+              </div>
+            ) : sortedUsers.length === 0 ? (
+              <div className="p-6 text-sm text-neutral-content/60 text-center">
+                No users found.
+              </div>
+            ) : (
+              <div className="divide-y divide-neutral-content/10">
+                {sortedUsers.map((item) => (
+                  <div key={item._id} className="p-4">
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <p className="text-sm text-base-content">
+                          {item.email}
+                        </p>
+                        <p className="text-xs mt-0.5 text-neutral-content/60 capitalize">
+                          {item.role.replace("_", " ")}
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span
+                          className={`badge ${item.isActive ? 'bg-secondary/10 text-secondary border-secondary/25' : 'bg-error/10 text-error border-error/25'} border text-xs`}
+                        >
+                          {item.isActive ? "active" : "inactive"}
+                        </span>
+                        <button
+                          onClick={() => startEdit(item)}
+                          className="btn btn-ghost btn-xs btn-square"
+                          title="Edit user"
+                        >
+                          <Pencil size={13} />
+                        </button>
+                        <button
+                          onClick={() => deleteUser(item)}
+                          className="btn btn-ghost btn-xs btn-square text-error"
+                          title="Delete user"
+                        >
+                          <Trash2 size={13} />
+                        </button>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span
-                        className="px-2 py-0.5 rounded-full text-xs"
-                        style={{
-                          background: item.isActive ? "rgba(0,217,126,0.1)" : "rgba(255,77,106,0.1)",
-                          color: item.isActive ? "#00D97E" : "#FF4D6A",
-                        }}
-                      >
-                        {item.isActive ? "active" : "inactive"}
-                      </span>
-                      <button
-                        onClick={() => startEdit(item)}
-                        className="w-8 h-8 rounded-lg flex items-center justify-center"
-                        style={{ border: "1px solid var(--border)", color: "var(--text-muted)" }}
-                        title="Edit user"
-                      >
-                        <Pencil size={13} />
-                      </button>
-                      <button
-                        onClick={() => deleteUser(item)}
-                        className="w-8 h-8 rounded-lg flex items-center justify-center"
-                        style={{ border: "1px solid var(--border)", color: "#FF4D6A" }}
-                        title="Delete user"
-                      >
-                        <Trash2 size={13} />
-                      </button>
+                    <div className="flex flex-wrap gap-1 mt-2">
+                      {item.permissions.map((perm) => (
+                        <span
+                          key={`${item._id}-${perm}`}
+                          className="px-2 py-0.5 rounded text-[11px] bg-base-300 border border-base-300 text-neutral-content/60"
+                        >
+                          {perm}
+                        </span>
+                      ))}
                     </div>
                   </div>
-                  <div className="flex flex-wrap gap-1 mt-2">
-                    {item.permissions.map((perm) => (
-                      <span
-                        key={`${item._id}-${perm}`}
-                        className="px-2 py-0.5 rounded text-[11px]"
-                        style={{ background: "var(--surface-overlay)", color: "var(--text-muted)", border: "1px solid var(--border)" }}
-                      >
-                        {perm}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
       {editingUser && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.7)" }}>
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
           <form
             onSubmit={saveEdit}
-            className="w-full max-w-lg rounded-xl p-4 space-y-3"
-            style={{ background: "var(--surface)", border: "1px solid var(--border)" }}
+            className="card bg-base-200 border border-base-300 w-full max-w-lg"
           >
-            <div className="flex items-center justify-between">
-              <h3 className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>
-                Edit User
-              </h3>
+            <div className="card-body p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-semibold text-base-content">
+                  Edit User
+                </h3>
+                <button
+                  type="button"
+                  onClick={cancelEdit}
+                  className="btn btn-ghost btn-sm btn-square"
+                >
+                  <X size={13} />
+                </button>
+              </div>
+
+              <input className="input input-bordered input-sm w-full bg-base-300" type="email" value={editEmail} onChange={(e) => setEditEmail(e.target.value)} required />
+              <input
+                className="input input-bordered input-sm w-full bg-base-300"
+                type="text"
+                placeholder="New password (optional)"
+                value={editPassword}
+                onChange={(e) => setEditPassword(e.target.value)}
+              />
+
+              <select className="select select-bordered select-sm w-full bg-base-300" value={editRole} onChange={(e) => setEditRole(e.target.value as UserRole)}>
+                {roles.map((item) => (
+                  <option key={item} value={item}>
+                    {item}
+                  </option>
+                ))}
+              </select>
+
+              <label className="flex items-center gap-2 text-sm text-neutral-content/80 cursor-pointer">
+                <input 
+                  type="checkbox" 
+                  className="checkbox checkbox-xs checkbox-primary"
+                  checked={editIsActive} 
+                  onChange={(e) => setEditIsActive(e.target.checked)} 
+                />
+                Active account
+              </label>
+
+              <div className="space-y-2">
+                <p className="text-xs text-neutral-content/60">
+                  Permissions
+                </p>
+                <div className="max-h-40 overflow-auto space-y-1">
+                  {APP_PERMISSIONS.map((perm) => (
+                    <label key={perm} className="flex items-center gap-2 text-xs text-neutral-content/80 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        className="checkbox checkbox-xs checkbox-primary"
+                        checked={editPermissions.includes(perm)}
+                        onChange={() => toggleEditPermission(perm)}
+                      />
+                      {perm}
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {error && (
+                <p className="text-xs text-error">
+                  {error}
+                </p>
+              )}
+
               <button
-                type="button"
-                onClick={cancelEdit}
-                className="w-8 h-8 rounded-lg flex items-center justify-center"
-                style={{ border: "1px solid var(--border)", color: "var(--text-muted)" }}
+                type="submit"
+                disabled={editSubmitting}
+                className="btn btn-primary btn-sm w-full"
               >
-                <X size={13} />
+                {editSubmitting ? "Saving..." : "Save Changes"}
               </button>
             </div>
-
-            <input className="form-input" type="email" value={editEmail} onChange={(e) => setEditEmail(e.target.value)} required />
-            <input
-              className="form-input"
-              type="text"
-              placeholder="New password (optional)"
-              value={editPassword}
-              onChange={(e) => setEditPassword(e.target.value)}
-            />
-
-            <select className="form-input" value={editRole} onChange={(e) => setEditRole(e.target.value as UserRole)}>
-              {roles.map((item) => (
-                <option key={item} value={item}>
-                  {item}
-                </option>
-              ))}
-            </select>
-
-            <label className="flex items-center gap-2 text-sm" style={{ color: "var(--text-secondary)" }}>
-              <input type="checkbox" checked={editIsActive} onChange={(e) => setEditIsActive(e.target.checked)} />
-              Active account
-            </label>
-
-            <div className="space-y-2">
-              <p className="text-xs" style={{ color: "var(--text-muted)" }}>
-                Permissions
-              </p>
-              <div className="max-h-40 overflow-auto space-y-1">
-                {APP_PERMISSIONS.map((perm) => (
-                  <label key={perm} className="flex items-center gap-2 text-xs" style={{ color: "var(--text-secondary)" }}>
-                    <input
-                      type="checkbox"
-                      checked={editPermissions.includes(perm)}
-                      onChange={() => toggleEditPermission(perm)}
-                    />
-                    {perm}
-                  </label>
-                ))}
-              </div>
-            </div>
-
-            {error && (
-              <p className="text-xs" style={{ color: "#FF4D6A" }}>
-                {error}
-              </p>
-            )}
-
-            <button
-              type="submit"
-              disabled={editSubmitting}
-              className="w-full py-2 rounded-lg text-sm font-semibold"
-              style={{
-                background: "linear-gradient(135deg, var(--accent), var(--accent-muted))",
-                color: "white",
-                opacity: editSubmitting ? 0.7 : 1,
-              }}
-            >
-              {editSubmitting ? "Saving..." : "Save Changes"}
-            </button>
           </form>
         </div>
       )}
     </>
   );
 }
+

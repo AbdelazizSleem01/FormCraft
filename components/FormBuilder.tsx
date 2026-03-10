@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from "react";
 import {
-  Plus, Trash2, GripVertical, ChevronDown, Save, Eye, Type,
+  Plus, Trash2, GripVertical, Save, Type,
   Mail, Hash, Link as LinkIcon, AlignLeft, List, CheckSquare,
   Calendar, Image, X, AlertCircle, CheckCircle2,
 } from "lucide-react";
@@ -132,20 +132,13 @@ export default function FormBuilder({ initialForm, onSaved }: FormBuilderProps) 
     <div className="relative">
       {/* Toast */}
       {toast && (
-        <div
-          className="fixed top-4 right-4 z-50 flex items-center gap-3 px-4 py-3 rounded-xl shadow-2xl animate-fade-up"
-          style={{
-            background: toast.type === "success" ? "rgba(0,217,126,0.15)" : "rgba(255,77,106,0.15)",
-            border: `1px solid ${toast.type === "success" ? "rgba(0,217,126,0.4)" : "rgba(255,77,106,0.4)"}`,
-            backdropFilter: "blur(12px)",
-          }}
-        >
-          {toast.type === "success"
-            ? <CheckCircle2 size={16} style={{ color: "#00D97E" }} />
-            : <AlertCircle size={16} style={{ color: "#FF4D6A" }} />}
-          <span className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>
-            {toast.message}
-          </span>
+        <div className="toast toast-top toast-end z-50">
+          <div className={`alert ${toast.type === "success" ? "alert-success" : "alert-error"} shadow-xl`}>
+            {toast.type === "success"
+              ? <CheckCircle2 size={16} />
+              : <AlertCircle size={16} />}
+            <span className="text-sm font-medium">{toast.message}</span>
+          </div>
         </div>
       )}
 
@@ -153,38 +146,34 @@ export default function FormBuilder({ initialForm, onSaved }: FormBuilderProps) 
         {/* Left: Builder canvas */}
         <div className="xl:col-span-3 space-y-4">
           {/* Form info */}
-          <div
-            className="rounded-xl p-5"
-            style={{ background: "var(--surface)", border: "1px solid var(--border)" }}
-          >
-            <h3
-              className="text-sm font-semibold mb-4"
-              style={{ color: "var(--text-secondary)", fontFamily: "'DM Mono', monospace", fontSize: "0.7rem", letterSpacing: "0.08em", textTransform: "uppercase" }}
-            >
-              Form Details
-            </h3>
-            <div className="space-y-3">
-              <div>
-                <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--text-secondary)" }}>
-                  Form Name <span style={{ color: "var(--rose)" }}>*</span>
-                </label>
-                <input
-                  className="form-input"
-                  placeholder="e.g. Customer Feedback Form"
-                  value={formName}
-                  onChange={(e) => setFormName(e.target.value)}
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-medium mb-1.5" style={{ color: "var(--text-secondary)" }}>
-                  Description
-                </label>
-                <input
-                  className="form-input"
-                  placeholder="What is this form for?"
-                  value={formDescription}
-                  onChange={(e) => setFormDescription(e.target.value)}
-                />
+          <div className="card bg-base-200 border border-base-300">
+            <div className="card-body p-5">
+              <h3 className="font-semibold text-neutral-content/60 mb-4 font-mono text-xs tracking-wider uppercase">
+                Form Details
+              </h3>
+              <div className="space-y-3">
+                <div>
+                  <label className="block text-xs font-medium mb-1.5 text-neutral-content/80">
+                    Form Name <span className="text-error">*</span>
+                  </label>
+                  <input
+                    className="input input-bordered input-sm w-full bg-base-300"
+                    placeholder="e.g. Customer Feedback Form"
+                    value={formName}
+                    onChange={(e) => setFormName(e.target.value)}
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium mb-1.5 text-neutral-content/80">
+                    Description
+                  </label>
+                  <input
+                    className="input input-bordered input-sm w-full bg-base-300"
+                    placeholder="What is this form for?"
+                    value={formDescription}
+                    onChange={(e) => setFormDescription(e.target.value)}
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -192,20 +181,14 @@ export default function FormBuilder({ initialForm, onSaved }: FormBuilderProps) 
           {/* Fields */}
           <div className="space-y-3">
             {fields.length === 0 ? (
-              <div
-                className="rounded-xl p-12 text-center border-dashed"
-                style={{ border: "2px dashed var(--border)", background: "rgba(28,28,38,0.3)" }}
-              >
-                <div
-                  className="w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center"
-                  style={{ background: "rgba(108,99,255,0.1)", border: "1px solid rgba(108,99,255,0.2)" }}
-                >
-                  <Plus size={20} style={{ color: "var(--accent)" }} />
+              <div className="rounded-xl p-12 text-center border-2 border-dashed border-base-300/20 bg-base-200/30">
+                <div className="w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center bg-primary/10 border border-base-300">
+                  <Plus size={20} className="text-primary" />
                 </div>
-                <p className="font-medium mb-1" style={{ color: "var(--text-secondary)", fontFamily: "'Syne', sans-serif" }}>
+                <p className="font-medium mb-1 text-neutral-content/80 font-display">
                   No fields yet
                 </p>
-                <p className="text-sm" style={{ color: "var(--text-muted)" }}>
+                <p className="text-sm text-neutral-content/60">
                   Use the panel on the right to add fields
                 </p>
               </div>
@@ -216,13 +199,9 @@ export default function FormBuilder({ initialForm, onSaved }: FormBuilderProps) 
                   <div
                     key={field.id}
                     className={cn(
-                      "rounded-xl p-4 transition-all duration-200",
-                      dragOver === field.id && "ring-2 ring-accent"
+                      "card bg-base-200 border border-base-300 transition-all duration-200",
+                      dragOver === field.id && "ring-2 ring-primary"
                     )}
-                    style={{
-                      background: "var(--surface)",
-                      border: "1px solid var(--border)",
-                    }}
                     draggable
                     onDragOver={(e) => { e.preventDefault(); setDragOver(field.id); }}
                     onDragLeave={() => setDragOver(null)}
@@ -240,129 +219,105 @@ export default function FormBuilder({ initialForm, onSaved }: FormBuilderProps) 
                     }}
                     onDragStart={(e) => e.dataTransfer.setData("fieldId", field.id)}
                   >
-                    <div className="flex items-center gap-3 mb-3">
-                      {/* Drag handle */}
-                      <div className="cursor-grab active:cursor-grabbing" style={{ color: "var(--border)" }}>
-                        <GripVertical size={16} />
+                    <div className="card-body p-4">
+                      <div className="flex items-center gap-3 mb-3">
+                        {/* Drag handle */}
+                        <div className="cursor-grab active:cursor-grabbing text-neutral-content/30">
+                          <GripVertical size={16} />
+                        </div>
+
+                        {/* Field type badge */}
+                        <div className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 bg-primary/10 border border-base-300">
+                          <FieldIcon size={13} className="text-primary" />
+                        </div>
+
+                        <span className="text-xs font-semibold flex-shrink-0 text-neutral-content/60 font-mono">
+                          #{idx + 1} {field.type.toUpperCase()}
+                        </span>
+
+                        <div className="flex-1" />
+
+                        {/* Required toggle */}
+                        <button
+                          onClick={() => updateField(field.id, { required: !field.required })}
+                          className={`text-xs px-2 py-1 rounded-md transition-all ${field.required ? 'bg-error/10 text-error border border-error/30' : 'bg-base-300 text-neutral-content/60 border border-base-300/20'}`}
+                        >
+                          {field.required ? "Required" : "Optional"}
+                        </button>
+
+                        <button
+                          onClick={() => removeField(field.id)}
+                          className="btn btn-ghost btn-xs btn-square text-error"
+                        >
+                          <Trash2 size={13} />
+                        </button>
                       </div>
 
-                      {/* Field type badge */}
-                      <div
-                        className="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0"
-                        style={{ background: "rgba(108,99,255,0.1)", border: "1px solid rgba(108,99,255,0.2)" }}
-                      >
-                        <FieldIcon size={13} style={{ color: "var(--accent)" }} />
-                      </div>
-
-                      <span
-                        className="text-xs font-semibold flex-shrink-0"
-                        style={{ color: "var(--text-muted)", fontFamily: "'DM Mono', monospace" }}
-                      >
-                        #{idx + 1} {field.type.toUpperCase()}
-                      </span>
-
-                      <div className="flex-1" />
-
-                      {/* Required toggle */}
-                      <button
-                        onClick={() => updateField(field.id, { required: !field.required })}
-                        className="text-xs px-2 py-1 rounded-md transition-all"
-                        style={{
-                          background: field.required ? "rgba(255,77,106,0.1)" : "var(--surface-overlay)",
-                          border: `1px solid ${field.required ? "rgba(255,77,106,0.3)" : "var(--border)"}`,
-                          color: field.required ? "#FF4D6A" : "var(--text-muted)",
-                          fontFamily: "'DM Mono', monospace",
-                          fontSize: "0.65rem",
-                        }}
-                      >
-                        {field.required ? "Required" : "Optional"}
-                      </button>
-
-                      <button
-                        onClick={() => removeField(field.id)}
-                        className="w-7 h-7 rounded-lg flex items-center justify-center transition-all hover:bg-rose-500/10"
-                        style={{ color: "var(--text-muted)", border: "1px solid transparent" }}
-                      >
-                        <Trash2 size={13} />
-                      </button>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <label className="block text-xs mb-1" style={{ color: "var(--text-muted)" }}>
-                          Field Label
-                        </label>
-                        <input
-                          className="form-input text-xs"
-                          value={field.label}
-                          onChange={(e) => updateField(field.id, { label: e.target.value })}
-                          style={{ padding: "0.4rem 0.65rem" }}
-                        />
-                      </div>
-                      {field.type !== "checkbox" && field.type !== "select" && field.type !== "logo" && (
+                      <div className="grid grid-cols-2 gap-3">
                         <div>
-                          <label className="block text-xs mb-1" style={{ color: "var(--text-muted)" }}>
-                            Placeholder
+                          <label className="block text-xs mb-1 text-neutral-content/60">
+                            Field Label
                           </label>
                           <input
-                            className="form-input text-xs"
-                            value={field.placeholder || ""}
-                            onChange={(e) => updateField(field.id, { placeholder: e.target.value })}
-                            style={{ padding: "0.4rem 0.65rem" }}
+                            className="input input-bordered input-xs w-full bg-base-300"
+                            value={field.label}
+                            onChange={(e) => updateField(field.id, { label: e.target.value })}
                           />
+                        </div>
+                        {field.type !== "checkbox" && field.type !== "select" && field.type !== "logo" && (
+                          <div>
+                            <label className="block text-xs mb-1 text-neutral-content/60">
+                              Placeholder
+                            </label>
+                            <input
+                              className="input input-bordered input-xs w-full bg-base-300"
+                              value={field.placeholder || ""}
+                              onChange={(e) => updateField(field.id, { placeholder: e.target.value })}
+                            />
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Select options */}
+                      {field.type === "select" && (
+                        <div className="mt-3">
+                          <label className="block text-xs mb-2 text-neutral-content/60">
+                            Options
+                          </label>
+                          <div className="space-y-2">
+                            {field.options?.map((opt, optIdx) => (
+                              <div key={optIdx} className="flex items-center gap-2">
+                                <span className="text-xs w-4 text-neutral-content/60 font-mono">
+                                  {optIdx + 1}.
+                                </span>
+                                <input
+                                  className="input input-bordered input-xs flex-1 bg-base-300"
+                                  value={opt}
+                                  onChange={(e) => updateSelectOption(field.id, optIdx, e.target.value)}
+                                />
+                                <button onClick={() => removeSelectOption(field.id, optIdx)}
+                                  className="btn btn-ghost btn-xs btn-square text-neutral-content/60">
+                                  <X size={11} />
+                                </button>
+                              </div>
+                            ))}
+                            <button
+                              onClick={() => addSelectOption(field.id)}
+                              className="text-xs flex items-center gap-1 px-3 py-1.5 rounded-lg transition-all text-primary bg-primary/10 border border-base-300 hover:bg-primary/20"
+                            >
+                              <Plus size={11} /> Add option
+                            </button>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Logo field info */}
+                      {field.type === "logo" && (
+                        <div className="mt-3 p-3 rounded-lg text-xs bg-secondary/10 border border-secondary/20 text-secondary">
+                          Add a direct logo image URL (png/jpg/svg) or a website URL for favicon fallback
                         </div>
                       )}
                     </div>
-
-                    {/* Select options */}
-                    {field.type === "select" && (
-                      <div className="mt-3">
-                        <label className="block text-xs mb-2" style={{ color: "var(--text-muted)" }}>
-                          Options
-                        </label>
-                        <div className="space-y-2">
-                          {field.options?.map((opt, optIdx) => (
-                            <div key={optIdx} className="flex items-center gap-2">
-                              <span className="text-xs w-4" style={{ color: "var(--text-muted)", fontFamily: "'DM Mono', monospace" }}>
-                                {optIdx + 1}.
-                              </span>
-                              <input
-                                className="form-input text-xs flex-1"
-                                value={opt}
-                                onChange={(e) => updateSelectOption(field.id, optIdx, e.target.value)}
-                                style={{ padding: "0.35rem 0.6rem" }}
-                              />
-                              <button onClick={() => removeSelectOption(field.id, optIdx)}
-                                className="w-6 h-6 flex items-center justify-center rounded"
-                                style={{ color: "var(--text-muted)" }}>
-                                <X size={11} />
-                              </button>
-                            </div>
-                          ))}
-                          <button
-                            onClick={() => addSelectOption(field.id)}
-                            className="text-xs flex items-center gap-1 px-3 py-1.5 rounded-lg transition-all"
-                            style={{
-                              color: "var(--accent-soft)",
-                              background: "rgba(108,99,255,0.08)",
-                              border: "1px dashed rgba(108,99,255,0.3)",
-                            }}
-                          >
-                            <Plus size={11} /> Add option
-                          </button>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Logo field info */}
-                    {field.type === "logo" && (
-                      <div
-                        className="mt-3 p-3 rounded-lg text-xs"
-                        style={{ background: "rgba(0,217,126,0.06)", border: "1px solid rgba(0,217,126,0.15)", color: "#00D97E" }}
-                      >
-                        Add a direct logo image URL (png/jpg/svg) or a website URL for favicon fallback
-                      </div>
-                    )}
                   </div>
                 );
               })
@@ -373,17 +328,11 @@ export default function FormBuilder({ initialForm, onSaved }: FormBuilderProps) 
           <button
             onClick={saveForm}
             disabled={saving}
-            className="w-full py-3 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-all duration-200 hover:-translate-y-0.5 disabled:opacity-60 disabled:translate-y-0"
-            style={{
-              background: "linear-gradient(135deg, var(--accent), var(--accent-muted))",
-              color: "white",
-              fontFamily: "'Syne', sans-serif",
-              boxShadow: "0 4px 20px rgba(108,99,255,0.3)",
-            }}
+            className="btn btn-primary w-full"
           >
             {saving ? (
               <>
-                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                <span className="loading loading-spinner loading-sm"></span>
                 Saving...
               </>
             ) : (
@@ -397,73 +346,52 @@ export default function FormBuilder({ initialForm, onSaved }: FormBuilderProps) 
 
         {/* Right: Field type panel */}
         <div className="xl:col-span-2">
-          <div
-            className="rounded-xl p-4 sticky top-20"
-            style={{ background: "var(--surface)", border: "1px solid var(--border)" }}
-          >
-            <h3
-              className="text-xs font-semibold mb-4 uppercase tracking-widest"
-              style={{ color: "var(--text-muted)", fontFamily: "'DM Mono', monospace" }}
-            >
-              Add Field
-            </h3>
-            <div className="grid grid-cols-1 gap-2">
-              {FIELD_TYPES.map(({ type, label, icon: Icon, description }) => (
-                <button
-                  key={type}
-                  onClick={() => addField(type)}
-                  className="flex items-center gap-3 p-3 rounded-lg text-left transition-all duration-200 group hover:-translate-x-0.5"
-                  style={{
-                    background: "var(--surface-overlay)",
-                    border: "1px solid var(--border)",
-                  }}
-                  onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLElement).style.borderColor = "rgba(108,99,255,0.4)";
-                    (e.currentTarget as HTMLElement).style.background = "rgba(108,99,255,0.06)";
-                  }}
-                  onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLElement).style.borderColor = "var(--border)";
-                    (e.currentTarget as HTMLElement).style.background = "var(--surface-overlay)";
-                  }}
-                >
-                  <div
-                    className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
-                    style={{ background: "rgba(108,99,255,0.1)", border: "1px solid rgba(108,99,255,0.15)" }}
+          <div className="card bg-base-200 border border-base-300 sticky top-20">
+            <div className="card-body p-4">
+              <h3 className="text-xs font-semibold mb-4 uppercase tracking-widest text-neutral-content/60 font-mono">
+                Add Field
+              </h3>
+              <div className="grid grid-cols-1 gap-2">
+                {FIELD_TYPES.map(({ type, label, icon: Icon, description }) => (
+                  <button
+                    key={type}
+                    onClick={() => addField(type)}
+                    className="flex items-center gap-3 p-3 rounded-lg text-left transition-all duration-200 group hover:-translate-x-0.5 bg-base-300 border border-base-300 hover:border-primary/40 hover:bg-primary/5"
                   >
-                    <Icon size={14} style={{ color: "var(--accent)" }} />
-                  </div>
-                  <div>
-                    <div className="text-xs font-semibold" style={{ color: "var(--text-primary)" }}>
-                      {label}
+                    <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 bg-primary/10 border border-primary/15">
+                      <Icon size={14} className="text-primary" />
                     </div>
-                    <div className="text-xs" style={{ color: "var(--text-muted)" }}>
-                      {description}
+                    <div>
+                      <div className="text-xs font-semibold text-base-content">
+                        {label}
+                      </div>
+                      <div className="text-xs text-neutral-content/60">
+                        {description}
+                      </div>
                     </div>
-                  </div>
-                  <Plus size={13} className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity" style={{ color: "var(--accent)" }} />
-                </button>
-              ))}
-            </div>
-
-            {/* Stats */}
-            {fields.length > 0 && (
-              <div
-                className="mt-4 p-3 rounded-lg"
-                style={{ background: "var(--surface-overlay)", border: "1px solid var(--border)" }}
-              >
-                <div className="flex justify-between text-xs mb-1">
-                  <span style={{ color: "var(--text-muted)" }}>Total fields</span>
-                  <span style={{ color: "var(--text-primary)", fontFamily: "'DM Mono', monospace" }}>{fields.length}</span>
-                </div>
-                <div className="flex justify-between text-xs">
-                  <span style={{ color: "var(--text-muted)" }}>Required</span>
-                  <span style={{ color: "#FF4D6A", fontFamily: "'DM Mono', monospace" }}>{fields.filter(f => f.required).length}</span>
-                </div>
+                    <Plus size={13} className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity text-primary" />
+                  </button>
+                ))}
               </div>
-            )}
+
+              {/* Stats */}
+              {fields.length > 0 && (
+                <div className="mt-4 p-3 rounded-lg bg-base-300 border border-base-300">
+                  <div className="flex justify-between text-xs mb-1">
+                    <span className="text-neutral-content/60">Total fields</span>
+                    <span className="text-base-content font-mono">{fields.length}</span>
+                  </div>
+                  <div className="flex justify-between text-xs">
+                    <span className="text-neutral-content/60">Required</span>
+                    <span className="text-error font-mono">{fields.filter(f => f.required).length}</span>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
     </div>
   );
 }
+

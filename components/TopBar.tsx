@@ -3,9 +3,10 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
-import { Bell, Search, User, LogOut, Menu } from "lucide-react";
+import { Bell, Search, User, LogOut, Menu, Sun, Moon } from "lucide-react";
 import { AppNotification, SessionUser } from "@/types";
 import { useSidebar } from "@/components/SidebarContext";
+import { useTheme } from "@/components/ThemeContext";
 
 const pageTitles: Record<string, { title: string; subtitle: string }> = {
   "/dashboard": { title: "Overview", subtitle: "Your workspace at a glance" },
@@ -43,6 +44,7 @@ export default function TopBar({ user }: { user: SessionUser }) {
 
   const [menuOpen, setMenuOpen] = useState(false);
   const { toggle } = useSidebar();
+  const { isDark, toggleTheme } = useTheme();
 
   const searchWrapRef = useRef<HTMLDivElement | null>(null);
   const notifyWrapRef = useRef<HTMLDivElement | null>(null);
@@ -127,81 +129,58 @@ export default function TopBar({ user }: { user: SessionUser }) {
   const initials = useMemo(() => user.email.slice(0, 1).toUpperCase(), [user.email]);
 
   return (
-    <header
-      className="fixed top-0 right-0 left-0 md:left-[240px] z-30 flex items-center justify-between px-3 md:px-6 py-4"
-      style={{
-        background: "rgba(10, 10, 15, 0.8)",
-        backdropFilter: "blur(12px)",
-        borderBottom: "1px solid var(--border)",
-        height: "65px",
-      }}
-    >
+    <header className="fixed top-0 right-0 left-0 md:left-[240px] z-30 flex items-center justify-between px-3 md:px-6 py-4 bg-base-100/80 backdrop-blur-xl border-b border-base-300 h-[65px]">
       <div className="flex items-center gap-2 md:gap-3 min-w-0">
         <button
-          className="md:hidden w-8 h-8 rounded-lg flex items-center justify-center"
-          style={{ background: "var(--surface-overlay)", border: "1px solid var(--border)" }}
+          className="md:hidden btn btn-ghost btn-sm btn-square"
           onClick={toggle}
           aria-label="Open sidebar"
         >
-          <Menu size={16} style={{ color: "var(--text-secondary)" }} />
+          <Menu size={16} />
         </button>
         <div className="min-w-0">
-          <h1
-            className="font-semibold text-sm md:text-base leading-tight truncate"
-            style={{ color: "var(--text-primary)", fontFamily: "'Syne', sans-serif" }}
-          >
+          <h1 className="font-semibold text-sm md:text-base leading-tight truncate text-base-content font-display">
             {page.title}
           </h1>
-          <p className="hidden md:block text-xs" style={{ color: "var(--text-muted)" }}>
+          <p className="hidden md:block text-xs text-neutral-content/60">
             {page.subtitle}
           </p>
         </div>
       </div>
 
       <div className="flex items-center gap-2 md:gap-3">
-        <div className="hidden md:flex flex-col items-end" style={{ fontFamily: "'DM Mono', monospace" }}>
-          <span className="text-xs font-medium" style={{ color: "var(--text-secondary)" }}>
+        <div className="hidden md:flex flex-col items-end font-mono">
+          <span className="text-xs font-medium text-neutral-content/80">
             {timeStr}
           </span>
-          <span className="text-xs" style={{ color: "var(--text-muted)", fontSize: "0.65rem" }}>
+          <span className="text-xs text-neutral-content/60" style={{ fontSize: "0.65rem" }}>
             {dateStr}
           </span>
         </div>
 
-        <div className="hidden md:block w-px h-6 mx-1" style={{ background: "var(--border)" }} />
+        <div className="hidden md:block w-px h-6 mx-1 bg-neutral-content/10" />
 
         <div className="relative" ref={searchWrapRef}>
           <button
-            className="flex items-center gap-2 px-2 md:px-3 py-1.5 rounded-lg text-xs transition-all duration-200 hover:border-opacity-60"
-            style={{
-              background: "var(--surface-overlay)",
-              border: "1px solid var(--border)",
-              color: "var(--text-muted)",
-            }}
+            className="flex items-center border border-primary gap-2 px-2 md:px-3 py-1.5 rounded-lg text-xs transition-all duration-200 hover:bg-base-300 btn btn-ghost btn-sm"
             onClick={() => setSearchOpen((prev) => !prev)}
             aria-label="Open search"
           >
             <Search size={13} />
-            <span className="hidden md:inline" style={{ fontFamily: "'DM Mono', monospace" }}>
+            <span className="hidden md:inline font-mono">
               {search || "Search..."}
             </span>
-            <span
-              className="hidden md:inline-flex px-1.5 py-0.5 rounded text-xs"
-              style={{ background: "var(--border)", color: "var(--text-muted)", fontSize: "0.6rem" }}
-            >
+            <span className="hidden md:inline-flex px-1.5 py-0.5 rounded text-xs bg-neutral-content/10 text-neutral-content/60" style={{ fontSize: "0.6rem" }}>
               Ctrl+K
             </span>
           </button>
 
           {searchOpen && (
-            <div
-              className="absolute right-0 mt-2 w-[calc(100vw-1.5rem)] max-w-96 rounded-xl overflow-hidden"
-              style={{ background: "var(--surface)", border: "1px solid var(--border)" }}
-            >
-              <div className="p-3" style={{ borderBottom: "1px solid var(--border)" }}>
+            <div className="absolute right-0 mt-2 w-80 rounded-xl overflow-hidden bg-base-200 border border-base-300 shadow-xl z-50">
+              <div className="p-3 border-b border-base-300">
                 <input
                   ref={searchInputRef}
-                  className="form-input text-sm"
+                  className="input input-bordered input-sm w-full bg-base-300"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder="Search forms and submissions"
@@ -209,11 +188,11 @@ export default function TopBar({ user }: { user: SessionUser }) {
               </div>
               <div className="max-h-72 overflow-auto">
                 {searching ? (
-                  <div className="p-3 text-xs" style={{ color: "var(--text-muted)" }}>
+                  <div className="p-3 text-xs text-neutral-content/60">
                     Searching...
                   </div>
                 ) : searchResults.length === 0 ? (
-                  <div className="p-3 text-xs" style={{ color: "var(--text-muted)" }}>
+                  <div className="p-3 text-xs text-neutral-content/60">
                     No results
                   </div>
                 ) : (
@@ -221,13 +200,13 @@ export default function TopBar({ user }: { user: SessionUser }) {
                     <Link
                       key={`${result.type}-${result.id}`}
                       href={result.href}
-                      className="block p-3 transition-colors hover:bg-white/5"
+                      className="block p-3 transition-colors hover:bg-base-300"
                       onClick={() => setSearchOpen(false)}
                     >
-                      <div className="text-sm" style={{ color: "var(--text-primary)" }}>
+                      <div className="text-sm text-base-content">
                         {result.title}
                       </div>
-                      <div className="text-xs" style={{ color: "var(--text-muted)" }}>
+                      <div className="text-xs text-neutral-content/60">
                         {result.subtitle}
                       </div>
                     </Link>
@@ -244,36 +223,29 @@ export default function TopBar({ user }: { user: SessionUser }) {
               setNotificationOpen((prev) => !prev);
               loadNotifications();
             }}
-            className="relative w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-200"
-            style={{ background: "var(--surface-overlay)", border: "1px solid var(--border)" }}
+            className="relative btn btn-ghost btn-sm btn-square"
           >
-            <Bell size={14} style={{ color: "var(--text-secondary)" }} />
+            <Bell size={14} />
             {unreadCount > 0 && (
-              <span
-                className="absolute -top-1 -right-1 min-w-4 h-4 px-1 rounded-full text-[10px] flex items-center justify-center"
-                style={{ background: "var(--accent)", color: "white" }}
-              >
+              <span className="absolute -top-1 -right-1 badge badge-primary badge-xs">
                 {unreadCount > 9 ? "9+" : unreadCount}
               </span>
             )}
           </button>
 
           {notificationOpen && (
-            <div
-              className="absolute right-0 mt-2 w-[calc(100vw-1.5rem)] max-w-80 rounded-xl overflow-hidden"
-              style={{ background: "var(--surface)", border: "1px solid var(--border)" }}
-            >
-              <div className="p-3 flex items-center justify-between" style={{ borderBottom: "1px solid var(--border)" }}>
-                <span className="text-sm font-semibold" style={{ color: "var(--text-primary)" }}>
+            <div className="absolute right-0 mt-2 w-80 rounded-xl overflow-hidden bg-base-200 border border-base-300 shadow-xl z-50">
+              <div className="p-3 flex items-center justify-between border-b border-base-300">
+                <span className="text-sm font-semibold text-base-content">
                   Notifications
                 </span>
-                <button className="text-xs" style={{ color: "var(--accent-soft)" }} onClick={markAllRead}>
+                <button className="text-xs text-primary" onClick={markAllRead}>
                   Mark all read
                 </button>
               </div>
               <div className="max-h-80 overflow-auto">
                 {notifications.length === 0 ? (
-                  <div className="p-3 text-xs" style={{ color: "var(--text-muted)" }}>
+                  <div className="p-3 text-xs text-neutral-content/60">
                     No notifications yet
                   </div>
                 ) : (
@@ -281,7 +253,7 @@ export default function TopBar({ user }: { user: SessionUser }) {
                     <Link
                       key={item._id}
                       href={item.link || "#"}
-                      className="block p-3 transition-colors hover:bg-white/5"
+                      className="block p-3 transition-colors hover:bg-base-300"
                       onClick={async () => {
                         if (!item.isRead) {
                           await fetch("/api/notifications", {
@@ -294,11 +266,11 @@ export default function TopBar({ user }: { user: SessionUser }) {
                         setNotificationOpen(false);
                       }}
                     >
-                      <div className="text-sm flex items-center justify-between" style={{ color: "var(--text-primary)" }}>
+                      <div className="text-sm flex items-center justify-between text-base-content">
                         <span>{item.title}</span>
-                        {!item.isRead && <span className="w-2 h-2 rounded-full" style={{ background: "var(--accent)" }} />}
+                        {!item.isRead && <span className="w-2 h-2 rounded-full bg-primary" />}
                       </div>
-                      <div className="text-xs mt-0.5" style={{ color: "var(--text-muted)" }}>
+                      <div className="text-xs mt-0.5 text-neutral-content/60">
                         {item.message}
                       </div>
                     </Link>
@@ -309,39 +281,38 @@ export default function TopBar({ user }: { user: SessionUser }) {
           )}
         </div>
 
+        <button
+          onClick={toggleTheme}
+          className="btn btn-ghost btn-sm btn-square"
+          aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+        >
+          {isDark ? <Sun size={14} /> : <Moon size={14} />}
+        </button>
+
         <div className="relative" ref={menuWrapRef}>
           <button
             onClick={() => setMenuOpen((prev) => !prev)}
-            className="w-8 h-8 rounded-lg flex items-center justify-center font-semibold text-xs"
-            style={{
-              background: "linear-gradient(135deg, rgba(108,99,255,0.3), rgba(0,217,126,0.3))",
-              border: "1px solid rgba(108, 99, 255, 0.4)",
-              color: "var(--accent-soft)",
-            }}
+            className="w-8 h-8 rounded-lg flex items-center justify-center font-semibold text-xs bg-gradient-to-br from-primary/30 to-secondary/30 border border-primary/40 text-primary"
             title={user.email}
           >
             {initials || <User size={14} />}
           </button>
 
           {menuOpen && (
-            <div
-              className="absolute right-0 mt-2 w-[calc(100vw-1.5rem)] max-w-64 rounded-xl overflow-hidden"
-              style={{ background: "var(--surface)", border: "1px solid var(--border)" }}
-            >
-              <div className="p-3" style={{ borderBottom: "1px solid var(--border)" }}>
-                <p className="text-xs" style={{ color: "var(--text-muted)" }}>
+            <div className="absolute right-0 mt-2 w-64 rounded-xl overflow-hidden bg-base-200 border border-base-300 shadow-xl z-50">
+              <div className="p-3 border-b border-base-300">
+                <p className="text-xs text-neutral-content/60">
                   Signed in as
                 </p>
-                <p className="text-sm truncate" style={{ color: "var(--text-primary)" }}>
+                <p className="text-sm truncate text-base-content">
                   {user.email}
                 </p>
-                <p className="text-xs mt-1" style={{ color: "var(--accent-soft)", textTransform: "uppercase" }}>
+                <p className="text-xs mt-1 text-primary uppercase">
                   {user.role.replace("_", " ")}
                 </p>
               </div>
               <button
-                className="w-full p-3 text-sm flex items-center gap-2 transition-colors hover:bg-white/5"
-                style={{ color: "#FF4D6A" }}
+                className="w-full p-3 text-sm flex items-center gap-2 transition-colors hover:bg-error/10 text-error"
                 onClick={handleLogout}
               >
                 <LogOut size={14} /> Log out
@@ -353,3 +324,4 @@ export default function TopBar({ user }: { user: SessionUser }) {
     </header>
   );
 }
+

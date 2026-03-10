@@ -28,7 +28,7 @@ export default async function SubmissionsPage() {
   const forms = await getForms(user);
 
   return (
-    <div className="space-y-6 animate-fade-up">
+    <div className="space-y-6 animate-fade-up ">
       <div>
         <h2
           className="text-2xl font-bold mb-1"
